@@ -1,0 +1,26 @@
+{
+    "products":[
+        {
+            "id":1,
+            "name":"vankaya",
+            "price":"45",
+            "quantity":"10"
+
+        },
+        {
+            "id":2,
+            "name":"bendayaka",
+            "price":"55",
+            "quantity":"18"
+
+        }
+        ,
+        {
+            "id":3,
+            "name":"berakaya",
+            "price":"65",
+            "quantity":"8"
+
+        }
+    ]
+}

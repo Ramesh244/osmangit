@@ -1,0 +1,293 @@
+React Js + JSON + Axios + React Routing Application Development Steps
+======================================================================
+step1:Create a React Js Project
+
+npx create-react-app jsonstackapp
+
+step2:switch to the project location
+
+cd jsonstackapp
+
+step3:open the project in to VSCode
+
+step4:install bootstrap in to your project
+
+>npm install bootstrap
+
+step5:add the following import statement in to index.js
+
+import '/node_moudles/bootstrap/dist/css/bootstrap.min.css'
+
+step6:install axios in to your project
+
+>npm install axios
+
+step7:To install json-server use the following command
+
+npm install -g json-server
+
+step8:Create db folder inside src and create db.json file
+
+db.json
+-------
+{
+  "students":[
+    {"id":1,"name":"abc","course":"ReactJs"},
+    {"id":2,"name":"pqr","course":"Java"}
+  ]
+}
+
+step9:to access json data run the following command
+
+json-server --watch db.json -p 30001
+
+       or
+npx json-server --watch db.json -p 30001
+
+step10:To access back end data in your react project create StudentService class(src/service)
+import axios from "axios";
+const baseUrl = 'http://localhost:3001/students';
+class StudentService {
+  getAllStudents(){
+    return axios.get(`${baseUrl}`).then(res=>res.data);
+  }
+}
+export default new StudentService();
+
+
+step11:Create a StudentList component with src/components
+import React, { Component } from "react";
+import StudentService from "../services/StudentService";
+
+class StudentList extends Component {
+  constructor() {
+    super();
+    this.state = {
+      students: [],
+    };
+  }
+  componentDidMount() {
+    StudentService.getAllStudents().then((res) => {
+      this.setState({ students: res });
+    });
+    
+  }
+  render() {
+    return (
+      <div className="container" style={{marginTop:20}}>
+        <div className="card">
+          <div className="card-header">
+            <h1>Student List</h1>
+          </div>
+          <div className="card-body">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.students.map((s, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>{s.id}</td>
+                      <td>{s.name}</td>
+                      <td>{s.course}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default StudentList;
+
+step12:call StudentList in to root component (App.js)
+
+import './App.css';
+import StudentList from './components/StudentList';
+
+function App() {
+  return (
+    <div className="App">
+       <StudentList/>
+    </div>
+  );
+}
+
+export default App;
+
+step13:to test the application run the following command
+
+npm start
+
+step14:Create a CreatStudent Component (src/components)
+
+step15:Create StudentService createStudent method
+import React, { useState } from "react";
+import StudentService from "../services/StudentService";
+
+const CreateStudent = () => {
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [course, setCourse] = useState("");
+  const createStudent=()=>{
+    let student = {
+        id:id,
+        name:name,
+        course:course
+    }
+    StudentService.createStudent(student).then(res=>{
+        console.log(res.data);
+    })
+    alert("calling")
+  }
+  return (
+    <div className="container">
+      <div className="card">
+        <div className="card-header">
+          <h1>Create Student</h1>
+        </div>
+        <div className="card-body">
+          <form>
+            <div className="mb-3">
+              <label className="form-label">Student Id</label>
+              <input
+                type="text"
+                className="form-control"
+                name="id"
+                onChange={(e) => setId(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Student Name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="name"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Student Course</label>
+              <input
+                type="text"
+                className="form-control"
+                name="course"
+                onChange={(e) => setCourse(e.target.value)}
+              />
+            </div>
+            <button
+              className="btn btn-primary"
+              onClick={createStudent}
+            >
+              Create
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CreateStudent;
+
+step16:Create a NavBar Component in src/components
+import React, { Component } from 'react'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import CreateStudent from './CreateStudent'
+import StudentList from './StudentList'
+
+export class NavBar extends Component {
+  render() {
+    return (
+      <div className='container'>
+        <BrowserRouter>
+           <ul>
+            <li>
+                <Link to="/create">Create Student</Link>
+            </li>
+            <li>
+                <Link to="/list">Student List</Link>
+            </li>
+           </ul>
+           <Routes>
+            <Route path='/create' element={<CreateStudent/>}/>
+            <Route  path='/list' element={<StudentList/>}/>
+           </Routes>
+        </BrowserRouter>
+      </div>
+    )
+  }
+}
+
+export default NavBar
+
+step17:add css in to App.css
+
+Note:add the following css in to App.css file last line
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #0c34e5;
+}
+
+li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #d2d219;
+}
+
+.active {
+  background-color: #04AA6D;
+}
+
+step18:Add NavBar in to root component (App.js)
+
+import './App.css';
+import NavBar from './components/NavBar';
+
+
+function App() {
+  return (
+    <div className="App">
+     <NavBar/>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
+
+
+
+
+
+
