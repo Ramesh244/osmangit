@@ -17,6 +17,7 @@ const CreateStudent = () => {
     alert("calling")
   }
   return (
+    <div>
     <div className="container">
       <div className="card">
         <div className="card-header">
@@ -61,6 +62,7 @@ const CreateStudent = () => {
         </div>
       </div>
     </div>
+ </div>
   );
 };
 
